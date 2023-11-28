@@ -759,7 +759,14 @@ class Thermostat(ClimateEntity):
         # Check if climate is an available preset option.
         elif preset_mode not in self._preset_modes.values():
             msg = f"Invalid climate name, available options are: {', '.join(self.preset_modes)}"
-            raise ServiceValidationError(msg)
+            raise ServiceValidationError(
+                msg,
+                translation_domain=DOMAIN,
+                translation_key="invalid_preset",
+                translation_placeholders={
+                    "modes": ", ".join(self.preset_modes),
+                },
+            )
 
         # Get device name from device id.
         device_registry = dr.async_get(self.hass)
@@ -772,13 +779,28 @@ class Thermostat(ClimateEntity):
         # Ensure sensors provided are available for thermostat.
         if not set(sensor_names).issubset(set(self._sensors)):
             msg = f"Invalid sensor for thermosat, available options are: {', '.join(self._sensors)}"
-            raise ServiceValidationError(msg)
+            raise ServiceValidationError(
+                msg,
+                translation_domain=DOMAIN,
+                translation_key="invalid_sensor",
+                translation_placeholders={
+                    "sensors": ", ".join(self._sensors),
+                },
+            )
 
         # Check if sensors are currently used on the climate for the thermostat.
         current_sensors_in_climate = self._sensors_in_preset_mode(preset_mode)
         if set(sensor_names) == set(current_sensors_in_climate):
             msg = f"This action would not be an update, current sensors on climate ({preset_mode}) are: {', '.join(current_sensors_in_climate)}"
-            raise ServiceValidationError(msg)
+            raise ServiceValidationError(
+                msg,
+                translation_domain=DOMAIN,
+                translation_key="invalid_update",
+                translation_placeholders={
+                    "current_climate": preset_mode,
+                    "current_sensors_in_climate": ", ".join(current_sensors_in_climate),
+                },
+            )
 
         _LOGGER.debug(
             "Setting sensors %s to be used on thermostat %s for program %s",

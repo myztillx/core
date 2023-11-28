@@ -29,6 +29,17 @@
       }
     }
   },
+  "exceptions": {
+    "invalid_preset": {
+      "message": "Invalid climate name, available options are: {modes}"
+    },
+    "invalid_sensor": {
+      "message": "Invalid sensor for thermostat, available options are: {sensors}"
+    },
+    "invalid_update": {
+      "message": "This action would not be an update, current sensors on climate ({current_climate}) are: {current_sensors_in_climate}"
+    }
+  },
   "services": {
     "create_vacation": {
       "name": "Create vacation",
